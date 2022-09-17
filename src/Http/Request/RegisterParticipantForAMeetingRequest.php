@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Requests;
+namespace App\Http\Request;
 
 use App\Http\Middleware\Rules\IsInteger;
 use App\Http\Middleware\Rules\IsNotNull;

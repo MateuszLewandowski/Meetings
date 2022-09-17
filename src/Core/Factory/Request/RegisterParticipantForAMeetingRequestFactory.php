@@ -3,7 +3,7 @@
 namespace App\Core\Factory\Requests;
 
 use App\Core\Factory\Request\RequestFactoryInterface;
-use App\Requests\RegisterParticipantForAMeetingRequest;
+use App\Http\Request\RegisterParticipantForAMeetingRequest;
 
 final class CreateMeetingRequestFactory implements RequestFactoryInterface
 {
