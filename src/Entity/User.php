@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Http\DTO\MeetingDTO;
+use App\Http\DTO\UserDTO;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements FactorableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,7 +21,7 @@ class User
     #[ORM\Column(length: 128, nullable: true)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
@@ -104,5 +106,23 @@ class User
         }
 
         return $this;
+    }
+
+    public function toDTO() {
+
+        $meetingsDTOCollection = [];
+        $meetings = $this->getMeetings();
+        $len = count($meetings);
+        if ($len > 0) {
+            foreach ($meetings as $i => $meeting) {
+                $meetingsDTOCollection[$i] = $meeting->toDTO();
+            }
+        }
+        return new UserDTO(
+            $this->getId(),
+            $this->getName(),
+            $this->getEmail(),
+            $meetingsDTOCollection,
+        );
     }
 }

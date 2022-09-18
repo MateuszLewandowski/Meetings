@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Http\DTO\MeetingDTO;
 use App\Repository\MeetingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MeetingRepository::class)]
-class Meeting
+class Meeting implements FactorableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,8 +23,8 @@ class Meeting
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\OneToOne(inversedBy: 'meeting', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'meetings', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false, unique: false)]
     private ?User $owner = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'meetings')]
@@ -112,5 +113,24 @@ class Meeting
         $this->participants_limit = $participants_limit;
 
         return $this;
+    }
+
+    public function toDTO() {
+        $participants = $this->getParticipants();
+        $participantsDTOCollection = [];
+        if (count($participants) > 0) {
+            foreach ($participants as $i => $participant) {
+                $participantsDTOCollection[$i] = (array) $participant->toDTO();
+            }
+        }
+        
+        return new MeetingDTO(
+            $this->getId(),
+            $this->getName(),
+            $this->getDate()->format('Y-m-d H:i'),
+            (array) $this->getOwner()->toDTO(),
+            $participantsDTOCollection,
+            $this->getParticipantsLimit()
+        );
     }
 }
