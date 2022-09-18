@@ -1,11 +1,11 @@
 <?php 
 
-namespace App\Core\Factory\Requests;
+namespace App\Core\Factory\Request;
 
 use App\Core\Factory\Request\RequestFactoryInterface;
 use App\Http\Request\RegisterParticipantForAMeetingRequest;
 
-final class CreateMeetingRequestFactory implements RequestFactoryInterface
+final class RegisterParticipantForAMeetingRequestFactory implements RequestFactoryInterface
 {
     public static function getInstance(): callable {
         return function(array $query, array $request, array $attributes, array $cookies, array $files, array $server, $content) {

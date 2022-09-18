@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Factory\Requests;
+namespace App\Core\Factory\Request;
 
 use App\Core\Factory\Request\RequestFactoryInterface;
 use App\Http\Request\CreateMeetingRequest;
