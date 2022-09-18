@@ -10,25 +10,26 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class RegisterParticipantForAMeetingRequest extends Request implements ValidatableRequestInterface
 {
-    public int $participant_id;
-    public int $event_id;
+    public int $user_id;
+    public int $meeting_id;
 
     public function validate(): bool 
     {
-        $this->participant_id = $this->request->get('participant_id', 0);
-        $this->event_id = $this->request->get('event_id', 0);
+        $this->user_id = $this->request->get('user_id', 0);
+        $this->meeting_id = $this->request->get('meeting_id', 0);
 
         return (
-            self::validateEventOrParticipantId(id: $this->participant_id) and
-            self::validateEventOrParticipantId(id: $this->event_id) 
+            self::validateEventOrParticipantId(id: $this->meeting_id) and
+            self::validateEventOrParticipantId(id: $this->user_id) 
         );
     }
 
-    private static function validateEventOrParticipantId(string $id): bool 
+    private static function validateEventOrParticipantId(int $id): bool 
     {
-        return (new IsNotNull)
+        $isNotNull = new IsNotNull;
+        $isNotNull
             ->setMiddleware(new IsInteger)
-            ->setMiddleware(new IsPositive)
-            ->validate(value: $id) === null;
+            ->setMiddleware(new IsPositive);
+        return $isNotNull->validate(value: $id) === null;
     }
 }
