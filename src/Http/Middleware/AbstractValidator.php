@@ -13,8 +13,8 @@ abstract class AbstractValidator implements MiddlewareInterface
     }
 
     public function validate(mixed $value): mixed {
-        return isset($this->nextMiddleware)
-            ? $this->nextMiddleware->verify($value)
+        return $this->nextMiddleware
+            ? $this->nextMiddleware->validate($value)
             : null;
     }
 }
